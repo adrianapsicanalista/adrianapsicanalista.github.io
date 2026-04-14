@@ -295,7 +295,7 @@
         const linksContainer = document.getElementById('linksContainer');
         let inactivityTimer;
         let ticking = false;
-        let hasHinted = false; // Controle para rolar apenas 1 vez
+        let hasHinted = false;
 
         async function loadButtons() {
             try {
@@ -363,7 +363,7 @@
             }
             
             if (window.scrollY > 50) {
-                hasHinted = true; // Se o usuário rolar por conta própria, não exibe mais a dica
+                hasHinted = true;
             }
 
             if (!hasHinted) {
