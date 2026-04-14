@@ -210,371 +210,21 @@
             body { align-items: stretch; }
             
             .mobile-container {
-                max-width: 100%;
+                max-width: 1100px;
+                width: 100%;
+                margin: 0 auto;
                 display: flex;
                 flex-direction: row;
             }
 
             .header-bg {
                 position: fixed;
-                left: 0;
-                width: 45%;
-                max-width: none;
-                height: 100vh;
-                transform-origin: center center;
-                background-position: center center;
-            }
-
-            .overlay {
-                background: linear-gradient(to right, transparent 70%, var(--bg) 100%),
-                            linear-gradient(to bottom, transparent 80%, var(--bg) 100%);
-            }
-
-            .edge-fade { display: none; }
-
-            .content {
-                margin-top: 0;
-                margin-left: 45%;
-                width: 55%;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 0 8% 0 5%;
-            }
-
-            .scroll-down-btn {
-                display: none;
-            }
-
-            .name { font-size: 64px; margin-bottom: 12px; }
-            .bio { font-size: 18px; max-width: 600px; }
-            .links-grid { max-width: 600px; }
-            .btn-link { padding: 30px; }
-        }
-
-        @media (max-width: 400px) {
-            .name { font-size: 34px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="main-wrapper">
-        <div class="mobile-container">
-            <div class="edge-fade top"></div>
-            <div class="edge-fade bottom"></div>
-
-            <div class="header-bg" id="parallaxImg">
-                <div class="overlay"></div>
-            </div>
-
-            <main class="content">
-                <div class="scroll-down-btn" id="scrollBtn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M12.707 15.707a1 1 0 0 1-1.414 0L5.636 10.05A1 1 0 1 1 7.05 8.636l4.95 4.95l4.95-4.95a1 1 0 0 1 1.414 1.414z"/></g></svg>
-                </div>
-                
-                <div class="profile-info">
-                    <span class="title-tag">Psicanálise</span>
-                    <h1 class="name">Adriana Nunes</h1>
-                    <p class="bio">
-                        Espaço dedicado à compreensão profunda do ser. Ajudo você a ressignificar traumas e reconstruir sua história através da fala e do acolhimento.
-                    </p>
-                </div>
-
-                <div class="links-grid" id="linksContainer"></div>
-            </main>
-        </div>
-    </div>
-
-    <script>
-        const parallaxImg = document.getElementById('parallaxImg');
-        const scrollBtn = document.getElementById('scrollBtn');
-        const linksContainer = document.getElementById('linksContainer');
-        let ticking = false;
-
-        async function loadButtons() {
-            try {
-                const response = await fetch('https://raw.githubusercontent.com/adrianapsicanalista/adrianapsicanalista.github.io/refs/heads/main/assets/btns.json');
-                const data = await response.json();
-                
-                linksContainer.innerHTML = '';
-
-                data.forEach((btn, index) => {
-                    const btnElement = document.createElement('a');
-                    btnElement.href = btn.link;
-                    btnElement.className = 'btn-link';
-                    btnElement.style.animationDelay = `${0.2 * index}s`;
-                    
-                    btnElement.innerHTML = `
-                        <div class="btn-content">
-                            <h3>${btn.titulo}</h3>
-                            <p>${btn.descricao}</p>
-                        </div>
-                        <div class="btn-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </div>
-                    `;
-                    linksContainer.appendChild(btnElement);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar botões:', error);
-            }
-        }
-
-        function updateParallax() {
-            const scroll = window.scrollY;
-            const threshold = 500;
-            
-            if (window.innerWidth < 1024) {
-                let scale = 1 + (scroll / 2500);
-                let opacity = 1 - (scroll / threshold);
-                let blur = Math.min(scroll / 60, 10);
-
-                if (opacity < 0) opacity = 0;
-                
-                parallaxImg.style.transform = `translateZ(0) scale(${scale})`;
-                parallaxImg.style.opacity = opacity;
-                parallaxImg.style.filter = `blur(${blur}px)`;
-
-                if(scroll > 50) {
-                    scrollBtn.style.opacity = "0";
-                    scrollBtn.style.pointerEvents = "none";
-                } else {
-                    scrollBtn.style.opacity = "1";
-                    scrollBtn.style.pointerEvents = "auto";
-                }
-            } else {
-                parallaxImg.style.transform = "translateZ(0) scale(1)";
-                parallaxImg.style.opacity = "1";
-                parallaxImg.style.filter = "blur(0px)";
-            }
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateParallax);
-                ticking = true;
-            }
-        }, { passive: true });
-
-        scrollBtn.addEventListener('click', () => {
-            window.scrollBy({ top: 300, behavior: 'smooth' });
-        });
-
-        function checkFirstVisit() {
-            const hasSeenHint = localStorage.getItem('hasSeenScrollHint');
-            if (!hasSeenHint && window.innerWidth < 1024) {
-                setTimeout(() => {
-                    hintScroll();
-                    localStorage.setItem('hasSeenScrollHint', 'true');
-                }, 3000);
-            }
-        }
-
-        function hintScroll() {
-            if (window.scrollY < 50) {
-                window.scrollBy({ top: 100, behavior: 'smooth' });
-                setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }, 800);
-            }
-        }
-
-        loadButtons();
-        checkFirstVisit();
-    </script>
-</body>
-</html>
-            color: #ffffff;
-            overflow-x: hidden;
-            display: flex;
-            justify-content: center;
-        }
-
-        .main-wrapper {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .mobile-container {
-            width: 100%;
-            max-width: var(--max-mobile);
-            min-height: 100vh;
-            background-color: var(--bg);
-            position: relative;
-        }
-
-        .edge-fade {
-            position: fixed;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: var(--max-mobile);
-            z-index: 100;
-            pointer-events: none;
-        }
-        .top { top: 0; height: 100px; background: linear-gradient(to bottom, var(--bg) 10%, transparent); }
-        .bottom { bottom: 0; height: 100px; background: linear-gradient(to top, var(--bg) 10%, transparent); }
-
-        .header-bg {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            max-width: var(--max-mobile);
-            height: 100vh;
-            background: url('https://raw.githubusercontent.com/adrianapsicanalista/adrianapsicanalista.github.io/refs/heads/main/assets/IMG-20260414-WA0004.jpg') center top / cover no-repeat;
-            z-index: 1;
-            transform-origin: center top;
-            will-change: transform, opacity, filter;
-            transform: translateZ(0);
-        }
-
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, transparent 15%, var(--bg) 92%);
-            z-index: 2;
-        }
-
-        .content {
-            position: relative;
-            z-index: 10;
-            padding: 0 28px 120px;
-            margin-top: 55vh; 
-        }
-
-        .profile-info {
-            margin-bottom: 40px;
-            animation: fadeInBlur 1.5s ease;
-        }
-
-        .name {
-            font-size: 42px;
-            font-weight: 700;
-            line-height: 1.1;
-            letter-spacing: -1.5px;
-            margin-bottom: 8px;
-            background: linear-gradient(to right, #fff, #8a94a8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .title-tag {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent);
-            margin-bottom: 24px;
-        }
-
-        .bio {
-            font-size: 16px;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            max-width: 90%;
-        }
-
-        .links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .btn-link {
-            position: relative;
-            background: var(--surface);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px;
-            padding: 24px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), background 0.4s ease;
-            overflow: hidden;
-            animation: fadeInBlur 0.8s ease forwards;
-            opacity: 0;
-        }
-
-        .btn-link::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-            transition: 0.5s;
-        }
-
-        .btn-link:hover::before { left: 100%; }
-        .btn-link:active {
-            transform: scale(0.97);
-            background: rgba(255,255,255,0.1);
-        }
-
-        .btn-content h3 { font-size: 18px; color: #fff; margin-bottom: 4px; }
-        .btn-content p { font-size: 14px; color: var(--text-secondary); }
-
-        .btn-icon {
-            width: 44px; height: 44px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; transition: 0.3s;
-        }
-
-        .scroll-down-btn {
-            position: absolute;
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            z-index: 20;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: bounce 2s infinite;
-            transition: opacity 0.5s;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-            40% {transform: translateX(-50%) translateY(-10px);}
-            60% {transform: translateX(-50%) translateY(-5px);}
-        }
-
-        @keyframes fadeInBlur {
-            from { opacity: 0; filter: blur(10px); transform: translateY(20px); }
-            to { opacity: 1; filter: blur(0); transform: translateY(0); }
-        }
-
-        @media (min-width: 1024px) {
-            body { align-items: stretch; }
-            
-            .mobile-container {
-                max-width: 100%;
-                display: flex;
-                flex-direction: row;
-            }
-
-            .header-bg {
-                position: fixed;
-                left: 0;
+                left: calc(50% - min(50vw, 550px));
                 width: 50%;
-                max-width: none;
+                max-width: 550px;
                 height: 100vh;
                 transform-origin: center;
+                background-position: center !important;
             }
 
             .overlay {
@@ -586,13 +236,14 @@
 
             .content {
                 margin-top: 0;
-                margin-left: 50%;
+                margin-left: auto;
                 width: 50%;
+                max-width: 550px;
                 height: 100vh;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                padding: 0 10%;
+                padding: 0 40px;
             }
 
             .scroll-down-btn {
@@ -644,6 +295,7 @@
         const linksContainer = document.getElementById('linksContainer');
         let inactivityTimer;
         let ticking = false;
+        let hasHinted = false; // Controle para rolar apenas 1 vez
 
         async function loadButtons() {
             try {
@@ -709,7 +361,14 @@
                 window.requestAnimationFrame(updateParallax);
                 ticking = true;
             }
-            resetInactivityTimer();
+            
+            if (window.scrollY > 50) {
+                hasHinted = true; // Se o usuário rolar por conta própria, não exibe mais a dica
+            }
+
+            if (!hasHinted) {
+                resetInactivityTimer();
+            }
         }, { passive: true });
 
         scrollBtn.addEventListener('click', () => {
@@ -718,7 +377,7 @@
 
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            if (window.scrollY < 50 && window.innerWidth < 1024) { 
+            if (!hasHinted && window.scrollY < 50 && window.innerWidth < 1024) { 
                 inactivityTimer = setTimeout(() => {
                     hintScroll();
                 }, 10000);
@@ -726,6 +385,8 @@
         }
 
         function hintScroll() {
+            if(hasHinted) return;
+            hasHinted = true; // Marca que já rolou para não repetir
             window.scrollBy({ top: 100, behavior: 'smooth' });
             setTimeout(() => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
