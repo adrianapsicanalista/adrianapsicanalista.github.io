@@ -17,11 +17,39 @@
         }
 
         :root {
-            --bg: #ffffff;
-            --surface: rgba(0, 0, 0, 0.03);
-            --accent: #333333;
-            --text-secondary: #555555;
+            --bg: #080a0f;
+            --surface: rgba(255, 255, 255, 0.05);
+            --accent: #d1d9e6;
+            --text-primary: #ffffff;
+            --text-secondary: #8a94a8;
+            --text-name-gradient: linear-gradient(to right, #fff, #8a94a8);
+            --tag-bg: rgba(255,255,255,0.1);
+            --border-color: rgba(255,255,255,0.1);
+            --btn-border: rgba(255,255,255,0.08);
+            --btn-hover-glow: rgba(255,255,255,0.05);
+            --btn-active-bg: rgba(255,255,255,0.1);
+            --icon-bg: rgba(255,255,255,0.05);
+            --scroll-icon-color: rgba(255, 255, 255, 0.5);
+            
             --max-mobile: 100%;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #ffffff;
+                --surface: rgba(0, 0, 0, 0.04);
+                --accent: #333333;
+                --text-primary: #080a0f;
+                --text-secondary: #4a5568;
+                --text-name-gradient: linear-gradient(to right, #080a0f, #718096);
+                --tag-bg: rgba(0,0,0,0.05);
+                --border-color: rgba(0,0,0,0.15);
+                --btn-border: rgba(0,0,0,0.1);
+                --btn-hover-glow: rgba(0,0,0,0.05);
+                --btn-active-bg: rgba(0,0,0,0.08);
+                --icon-bg: rgba(0,0,0,0.06);
+                --scroll-icon-color: rgba(0, 0, 0, 0.5);
+            }
         }
 
         * {
@@ -34,7 +62,7 @@
         body {
             font-family: 'GoogleSans', sans-serif;
             background-color: var(--bg);
-            color: #1a1a1a;
+            color: var(--text-primary);
             overflow-x: hidden;
             display: flex;
             justify-content: center;
@@ -105,7 +133,7 @@
             line-height: 1.1;
             letter-spacing: -1.5px;
             margin-bottom: 8px;
-            background: linear-gradient(to right, #000000, #555555);
+            background: var(--text-name-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -114,8 +142,8 @@
             display: inline-block;
             padding: 4px 12px;
             border-radius: 50px;
-            background: rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--tag-bg);
+            border: 1px solid var(--border-color);
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -141,7 +169,7 @@
             background: var(--surface);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--btn-border);
             border-radius: 24px;
             padding: 24px;
             text-decoration: none;
@@ -159,25 +187,25 @@
             position: absolute;
             top: 0; left: -100%;
             width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            background: linear-gradient(90deg, transparent, var(--btn-hover-glow), transparent);
             transition: 0.5s;
         }
 
         .btn-link:hover::before { left: 100%; }
         .btn-link:active {
             transform: scale(0.97);
-            background: rgba(0, 0, 0, 0.08);
+            background: var(--btn-active-bg);
         }
 
-        .btn-content h3 { font-size: 18px; color: #000000; margin-bottom: 4px; }
+        .btn-content h3 { font-size: 18px; color: var(--text-primary); margin-bottom: 4px; }
         .btn-content p { font-size: 14px; color: var(--text-secondary); }
 
         .btn-icon {
             width: 44px; height: 44px;
-            background: rgba(0, 0, 0, 0.05);
+            background: var(--icon-bg);
             border-radius: 15px;
             display: flex; align-items: center; justify-content: center;
-            color: #000000; transition: 0.3s;
+            color: var(--text-primary); transition: 0.3s;
         }
 
         .scroll-down-btn {
@@ -185,7 +213,7 @@
             top: -80px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(0, 0, 0, 0.5);
+            color: var(--scroll-icon-color);
             cursor: pointer;
             z-index: 20;
             display: flex;
